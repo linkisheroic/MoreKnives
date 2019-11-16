@@ -4,15 +4,27 @@ using UnityEngine;
 
 namespace MoreKnives.Items
 {
-    internal abstract class KnifeItems : Spawnable
+    internal abstract class KnifeItems : Craftable
     {
-        public static TechType KnivesID { get; protected set; }
+        public static TechType StasisKnifeID { get; protected set; }
+        public static TechType ObsidianKnifeID { get; protected set; }
+        public static TechType RepulsionKnifeID { get; protected set; }
 
-        internal static void PatchBioPlasmaItems()
+        public override string AssetsFolder { get; } = @"MoreKnives/Assets";
+
+        internal static void PatchKnifeItems()
         {
             var stasisKnife = new StasisKnife();
+            var obsidianKnife = new ObsidianKnife();
+            //var repulsionKnife = new RepulsionKnife();
 
             stasisKnife.Patch();
+            obsidianKnife.Patch();
+            repulsionKnife.Patch();
+
+            CraftDataHandler.SetItemSize(StasisKnifeID, new Vector2int(1, 1));
+            CraftDataHandler.SetItemSize(ObsidianKnifeID, new Vector2int(1, 1));
+            CraftDataHandler.SetItemSize(RepulsionKnifeID, new Vector2int(1, 1));
         }
 
         protected abstract TechType BaseType { get; }
@@ -29,19 +41,5 @@ namespace MoreKnives.Items
 
             return obj;
         }
-    }
-    class StasisKnife : KnifeItems
-    {
-        public StasisKnife()
-            : base(classID: "stasisknife", friendlyName: "Stasis Knife", description: "This upgraded knife implements the functionality of your Stasis Rifle.")
-        {
-            OnFinishedPatching += SetStaticTechType;
-        }
-
-        protected override TechType BaseType { get; } = TechType.HeatBlade;
-
-        public override string AssetsFolder { get; } = @"MoreKnives/Assets";
-
-        private void SetStaticTechType() => KnivesID = this.TechType;
     }
 }
